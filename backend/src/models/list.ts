@@ -1,8 +1,8 @@
-const mongoose = require("mongoose")
+import mongoose from "mongoose"
 const Schema = mongoose.Schema
 
 const listSchema = new Schema({
-  name: {
+  title: {
     type: String,
     required: true
   },
@@ -21,4 +21,4 @@ const listSchema = new Schema({
   }
 })
 
-export default mongoose.model("List", listSchema)
+export default mongoose.model("lists", listSchema)

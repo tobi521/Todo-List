@@ -52,23 +52,20 @@ export default function page({}: Props) {
 									<button className="bg-blue-500 rounded hover:bg-blue-600 text-white py-2 px-4 focus:ring-2 focus:ring-blue-200" >Search</button>
 							</div>
 							<div className="w-full">
-								<div className="relative overflow-x-auto 
-								shadow-md sm:rounded-lg">
-									<table className="w-full text-sm text-left 
-									rtl:text-right text-gray-500 ">
-										<thead className="text-xs text-gray-700 
-										uppercase bg-gray-50 ">
+								<div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+									<table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
+										<thead className="text-xs text-gray-700 uppercase bg-gray-50 ">
 											<tr>
-												<th scope="col"
-													className="px-6 py-3">
+												<th scope="col" className="px-6 py-3">
+													Status
+												</th>
+												<th scope="col" className="px-6 py-3">
 													Title
 												</th>
-												<th scope="col"
-													className="px-6 py-3">
+												<th scope="col" className="px-6 py-3">
 													Description
 												</th>
-												<th scope="col"
-													className="px-6 py-3">
+												<th scope="col" className="px-6 py-3">
 													Action
 												</th>
 											</tr>
@@ -77,15 +74,11 @@ export default function page({}: Props) {
 											{todos &&
 												todos.map((item: any, index: any) => {
 													return (
-														<tr 
-															className="odd:bg-white 
-																	even:bg-gray-50
-														border-b " key={index}>
-															<th
-																scope="row"
-																className="px-6 py-4 font-medium 
-																text-gray-900 whitespace-nowrap"
-															>
+														<tr className="odd:bg-white even:bg-gray-50 border-b " key={index}>
+															<th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+																{item.status}
+															</th>
+															<th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
 																{item.title}
 															</th>
 															<td className="px-6 py-4">{item.desc}</td>
@@ -93,11 +86,7 @@ export default function page({}: Props) {
 															<td className="px-6 py-4">
 																<span className="inline-flex">
 																	<a
-																		className=" cursor-pointer font-medium 
-																		border-2
-																		border-red-500 rounded-md p-1 
-																		hover:bg-red-500
-																		hover:text-white"
+																		className=" cursor-pointer font-medium border-2 border-red-500 rounded-md p-1 hover:bg-red-500 hover:text-white"
 																		onClick={() => {
 																			deleteTodo(item.title);
 																		}}
@@ -131,11 +120,7 @@ export default function page({}: Props) {
 																		</svg>
 																	</a>
 																	<a
-																		className="ml-2 cursor-pointer 
-																		border-2 
-																		border-green-500 rounded-md p-1 
-																		hover:bg-green-500 
-																		hover:text-white"
+																		className="ml-2 cursor-pointer border-2 border-green-500 rounded-md p-1 hover:bg-green-500 hover:text-white"
 																		href={`/edit/${item.title}`}
 																	>
 																		<svg

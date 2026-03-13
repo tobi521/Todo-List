@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 
-export default function EditModal({open, setOpen, todo: initialTodo}: any) {
+export default function EditModal({open, setOpen, initTodo}: any) {
   
-  const [todo, setTodo] = useState(initialTodo)
+  const [todo, setTodo] = useState(initTodo)
 
   const editTodo = () => {
     let todos = localStorage.getItem("todos")
