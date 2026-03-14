@@ -13,7 +13,7 @@ export default (value: { name: string; email: string; password: string; confirmP
     errors.name = "Name is required";
   }
 
-  if(validator.isLength(value.name, { min: 2, max: 30 })) {
+  if(!validator.isLength(value.name, { min: 2, max: 30 })) {
     errors.name = "Name must be between 2 and 30 characters";
   }
 
@@ -29,11 +29,11 @@ export default (value: { name: string; email: string; password: string; confirmP
     errors.confirmPassword = "Confirm password is required";
   }
 
-  if(validator.isLength(value.password, { min: 6, max: 30 })) {
+  if(!validator.isLength(value.password, { min: 6, max: 30 })) {
     errors.password = "Password must be at least 6 characters";
   }
 
-  if(validator.equals(value.password, value.confirmPassword)) {
+  if(!validator.equals(value.password, value.confirmPassword)) {
     errors.confirmPassword = "Passwords must match";
   }
 

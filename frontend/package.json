@@ -9,10 +9,17 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@next/env": "^16.1.6",
+    "@redux-devtools/extension": "^4.0.0",
+    "@reduxjs/toolkit": "^2.11.2",
+    "axios": "^1.13.6",
+    "dotenv": "^17.3.1",
+    "jwt-decode": "^4.0.0",
     "next": "^16.0.10",
     "react": "19.2.1",
     "react-dom": "19.2.1",
     "react-redux": "^9.2.0",
+    "redux": "^5.0.1",
     "redux-thunk": "^3.1.0"
   },
   "devDependencies": {

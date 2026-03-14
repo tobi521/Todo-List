@@ -5,7 +5,7 @@ import listRouter from "./list"
 
 const router = express.Router()
 
-router.use("/user", userRouter)
+router.use("/auth", userRouter)
 router.use("/list", listRouter)
 
 export default router

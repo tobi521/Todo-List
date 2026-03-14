@@ -2,12 +2,12 @@ import validator from "validator";
 import isEmpty from "./is-empty";
 
 export default (value: { title: string; description: string }) => {
-  let errors = { title: "", description: "" };
+  let errors: { title?: string, description?: string } ={};
 
   value.title = !isEmpty(value.title) ? value.title : "";
   value.description = !isEmpty(value.description) ? value.description : "";
 
-  if (!validator.isEmail(value.title)) {
+  if (validator.isEmpty(value.title)) {
     errors.title = "Title is required";
   }
 

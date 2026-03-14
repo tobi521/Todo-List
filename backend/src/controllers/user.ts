@@ -5,7 +5,7 @@ export const loginCtrl = (req: Request, res: Response) => {
   login(req, res);
 }
 
-export const registerCtrl =(req: Request, res: Response) => {
+export const registerCtrl = (req: Request, res: Response) => {
   register(req, res);
 }
 

@@ -13,7 +13,7 @@ export const addList = async (req: Request, res: Response) => {
 
     const newList = new List({
       title: req.body.title,
-      user_id: req.body.user_id,
+      user_id: req.body.user,
       description: req.body.description
     })
 

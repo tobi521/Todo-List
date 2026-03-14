@@ -31,7 +31,7 @@ export const register = async (req: Request, res: Response) => {
       newUser.password = await bcrypt.hash(newUser.password, salt)
 
       await newUser.save()
-      return res.status(200).json({success: "User registered successfully"})
+      return res.status(200).json({type: true, result: newUser})
     }
   } catch(err) {
     return res.status(500).json({error: "Server error"})
@@ -64,8 +64,8 @@ export const login = async (req: Request, res: Response) => {
       const token = await jwt.sign(payload, key.secretOrKey, {expiresIn: 7200})
 
       return res.status(200).json({
-        success: true,
-        token: `Bearer ${token}`
+        type: true,
+        result: `Bearer ${token}`
       })  
     } else {
       return res.status(400).json({password: "Password is incorrect"})
