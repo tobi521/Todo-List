@@ -1,209 +1,211 @@
 'use client'
-import { useEffect, useState } from "react";
-import AddModal from "../../component/AddModal";
-import ProtectedRoute from "../../component/ProtectedRoute"
+import React, { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import ProtectedRoute from "../../component/common/ProtectedRoute"
+
+import { fetchLists, removeList, createList, modifyList, searchList } from "../../redux/actions/listAction"
+import Input from "@/src/component/common/Input"
+import Button from "@/src/component/common/Button"
+import { logoutUser } from "@/src/redux/actions/authAction"
 
 type Props = {}
 
 export default function page({}: Props) {
-  const [todos, setTodos] = useState([]);
-  const [open, setOpen] = useState(false);
-  
-	useEffect(() => {
-		let todos = localStorage.getItem("todos");
-		if (!todos) {
-			localStorage.setItem("todos", JSON.stringify([]));
-		} else {
-			setTodos(JSON.parse(todos));
-		}
-	}, []);
+	const [todo, setTodo] = useState({title: "", description: "", dueDate: new Date().toISOString().split('T')[0], user_id: "", option: "", id: "", status: false})
+	const [mode, setMode] = useState("add");
+	const [search, setSearch] = useState({key: "", value: ""});
 
-	const deleteTodo = (title: any) => {
-		let newTodos = todos.filter((item: any) => {
-			return item.title != title;
-		});
-		localStorage.setItem("todos", JSON.stringify(newTodos));
-		setTodos(newTodos);
+	const dispatch = useDispatch()
+	const list = useSelector((state:any) => state.list)
+	const auth = useSelector((state: any) => state.auth)
+	const error = useSelector((state: any) => state.error)
+
+	useEffect(() => {
+		setTodo({...todo, user_id: auth.user.id})
+		if(auth.user.id)
+			fetchLists(auth.user.id , dispatch)
+	}, [auth.user])
+
+	const initTodo = () => {
+		setTodo({title: "", description: "", dueDate: new Date().toISOString().split('T')[0], user_id: auth.user.id, option: "personal", id: "", status: false})
+	}
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setTodo({ ...todo, [e.target.name]: e.target.value })
+	}
+
+	const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setSearch({key: "title", value: e.target.value})
+	}
+
+	const handleStatusChange = (id: string, state: boolean) => {
+		modifyList(id, {status: state}, dispatch)
+	}
+
+	const handleTodoClick = (item: any) => {
+		setTodo({...todo, ...item, dueDate: item.dueDate.split("T")[0]});
+		setMode("edit")
+	}
+
+	const handeAddClick = () => {
+		setMode("add")
+		initTodo()
+	}
+
+	const addTodo = () => {
+		createList(todo, dispatch);
+		initTodo()
+	}
+
+	const removeTodo = (id: any) => {
+		removeList(id, dispatch)
+		initTodo()
 	};
+
+	const searchTodo = (e:any) => {
+		if(e.key === "Enter") {
+			searchList(search, dispatch)
+		}
+	}
+
+	const updateTodo = () => {
+		modifyList(todo.id, todo, dispatch)
+		initTodo()
+		setMode("add")
+	}
 
 	return (
 		<ProtectedRoute>
-			<section className="text-gray-600 body-font w-full bg-gray-100">
-				<AddModal open={open} setOpen={setOpen} />
-				<div className="container px-5 py-24 mx-auto">
-					<div className="flex flex-col text-center w-full mb-20">
-						<h1 className="text-4xl font-medium title-font mb-4 text-gray-900">
-							Todos
-						</h1>
-						{todos.length == 0 && (
-								<p className="mx-auto leading-relaxed text-base">
-									Please add a todo by going to the homepage
-								</p>
-						)}
+			<div className="bg-taupe-200 top-0 left-0 w-full h-screen flex items-center justify-center">
+				<div className="flex flex-row justify-center m-18 rounded-xl h-200 shadow-lg w-5/6">
+					<div className="basis-1/4 bg-gray-100 rounded-l-2xl">
+						<div className="m-7 flex flex-col">
+							<h2 className="text-3xl font-bold mb-5">
+								<p>Menu</p>
+							</h2>
+							<div className="mb-10" onKeyDown={(e:any)=> searchTodo(e)}>
+								<Input type="text" placeholder="Search" name="search" icon={
+									<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+										<path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+									</svg>
+									}
+									onChange={handleSearchChange}
+									value={search.value}
+								/>
+							</div>
+							<div className="flex flex-col w-full">
+								<h3 className="text-lg mb-3">TASKS</h3>
+								<div>
+									<ul>
+										<li className="flex p-2 hover:bg-gray-200 rounded cursor-pointer" onClick={() => searchList({key: "title", value: ""}, dispatch)}>
+											<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+												<path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+											</svg>
+											<p className="ml-2">All</p>
+										</li>
+										<li className="flex p-2 hover:bg-gray-200 rounded cursor-pointer" onClick={() => searchList({key: "status", value: false}, dispatch)}>
+											<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+												<path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+											</svg>
+											<p className="ml-2">Todo</p>
+										</li>
+										<li className="flex p-2 hover:bg-gray-200 rounded cursor-pointer" onClick={() => searchList({key: "status", value: true}, dispatch)}>
+											<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+												<path strokeLinecap="round" strokeLinejoin="round" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 0 1 9 9v.375M10.125 2.25A3.375 3.375 0 0 1 13.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 0 1 3.375 3.375M9 15l2.25 2.25L15 12" />
+											</svg>
+											<p className="ml-2">Done</p>
+										</li>
+									</ul>
+								</div>
+								<h3 className="text-lg mb-3 mt-10">LISTS</h3>
+								<div>
+									<ul>
+										<li className="flex p-2 items-center hover:bg-gray-200 rounded cursor-pointer"  onClick={() => searchList({key: "option", value: "personal"}, dispatch)}>
+											<p className="bg-red-500 rounded-full w-4 h-4 mr-2"></p>
+											<p className="ml-2">Personal</p>
+										</li>
+										<li className="flex p-2 items-center hover:bg-gray-200 rounded cursor-pointer" onClick={() => searchList({key: "option", value: "work"}, dispatch)}>
+											<p className="bg-blue-500 rounded-full w-4 h-4 mr-2"></p>
+											<p className="ml-2">Work</p>
+										</li>
+										<li className="flex p-2 items-center hover:bg-gray-200 rounded cursor-pointer" onClick={() => searchList({key: "option", value: "other"}, dispatch)}>
+											<p className="bg-yellow-500 rounded-full w-4 h-4 mr-2"></p>
+											<p className="ml-2">Other</p>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<div className="flex py-2 hover:bg-gray-200 rounded cursor-pointer px-1 mt-20" onClick={() => logoutUser(dispatch)}>
+								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+									<path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+								</svg>
+								<button className="pl-2 w-full text-left cursor-pointer" onClick={() => logoutUser(dispatch)}>
+									Log Out
+								</button>
+							</div>
+						</div>
 					</div>
-					{
-						todos.length > 0 && (
-							<>
-								<div className="flex algin-center justify-center mb-10">
-									<input className="w-full bg-white rounded border 
-										border-gray-300 focus:border-green-800
-										focus:ring-2 focus:ring-green-200 text-base 
-										outline-none text-gray-700 py-1 px-3
-										leading-8 transition-colors duration-200 ease-in-out mr-2" type="text" placeholder="Search by title"
-									/>
-										<button className="bg-blue-500 rounded hover:bg-blue-600 text-white py-2 px-4 focus:ring-2 focus:ring-blue-200 flex" >
-											Search
-											<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-6 ml-1">
-												<path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-											</svg>
-										</button>
+					<div className="basis-5/12 p-4 bg-white">
+						<h3 className="text-5xl px-5 pt-2 font-bold mb-10">Todos</h3>
+						<div className="m-4 pr-4">
+							<button className="border-y mx-4 py-3 text-xl text-gray-400 flex border-gray-300 hover:bg-gray-200 cursor-pointer w-full" onClick={handeAddClick}>
+								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+									<path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+								</svg>
+								Add New Task
+							</button>
+						</div>
+						<div className="flex flex-col m-4 pl-4">
+							{list.lists.length > 0 ? list.lists.map((item: any) => 
+								<div 
+									key={item._id} 
+									className={`text-2xl border-b border-gray-300 py-3 hover:bg-gray-100 cursor-pointer flex items-center ${item.status ? "line-through text-gray-400" : ""}`} 
+								>
+									<input type="checkbox" checked={item.status} onChange={(e) => handleStatusChange(item._id, e.target.checked)} className="mr-3 scale-130"/>
+									<p className="ml-1" onClick={() => handleTodoClick({id: item._id, title: item.title, description: item.description, dueDate: item.dueDate, option: item.option, status: item.status})}>
+										{item.title}
+									</p>
+								</div>) 
+								: 
+								<p>No todos for today.</p>
+							}
+						</div>
+					</div>
+					<div className="basis-1/3 bg-gray-50 p-4 rounded-r-2xl">
+						<div className="m-2">
+							<h3 className="text-3xl font-bold mb-5">Task:</h3>
+							<div className="flex flex-col w-full">
+								<Input title="Title" type="text" name="title" value={todo.title} onChange={handleChange} placeholder="Type your title" error={error.errors.title}/>
+								<Input title="Description" type="text" name="description" value={todo.description} onChange={handleChange} placeholder="Type your description" error={error.errors.description}/>
+							</div>
+							<div>
+								<div className="flex flex-row items-center m-2 my-5">
+									<h5 className="text-lg basis-1/5">List</h5>
+									<select name="option" className="ml-2 border rounded px-2 py-1 basis-1/4 border-none" value={todo.option} onChange={e => handleChange(e as any)}>
+										<option value="personal">Personal</option>
+										<option value="work">Work</option>
+										<option value="other">Other</option>
+									</select>
 								</div>
-								<div className="w-full">
-									<div className="m-2">
-										<button className="flex bg-green-500 rounded hover:bg-green-600 text-white py-2 px-4 focus:ring-2 focus:ring-green-200" onClick={() => setOpen(true)}>
-											Add Todo
-											<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="size-6 ml-1">
-												<path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-											</svg>
-										</button>
-									</div>
-									<div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-										<table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
-											<thead className="text-xs text-gray-700 uppercase bg-gray-50 ">
-												<tr>
-													<th scope="col" className="px-6 py-3">
-														Status
-													</th>
-													<th scope="col" className="px-6 py-3">
-														Title
-													</th>
-													<th scope="col" className="px-6 py-3">
-														Description
-													</th>
-													<th scope="col" className="px-6 py-3">
-														Action
-													</th>
-												</tr>
-											</thead>
-											<tbody>
-												{todos &&
-													todos.map((item: any, index: any) => {
-														return (
-															<tr className="odd:bg-white even:bg-gray-50 border-b " key={index}>
-																<th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-																	{item.status}
-																</th>
-																<th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-																	{item.title}
-																</th>
-																<td className="px-6 py-4">{item.desc}</td>
-
-																<td className="px-6 py-4">
-																	<span className="inline-flex">
-																		<a
-																			className=" cursor-pointer font-medium border-2 border-red-500 rounded-md p-1 hover:bg-red-500 hover:text-white"
-																			onClick={() => {
-																				deleteTodo(item.title);
-																			}}
-																		>
-																			<svg
-																				xmlns="https://www.w3.org/2000/svg"
-																				viewBox="0 0 30 30"
-																				width="20px"
-																				height="20px"
-																			>
-																				{" "}
-																				<path d="M 14.984375 2.4863281 A 1.0001 
-																				1.0001 0 0 0 14 3.5 L 14 4 L 8.5 4 A 
-																				1.0001 1.0001 0 0 0 7.4863281 5 L 6 5 A
-																				1.0001 
-																				1.0001 0 1 0 6 7 L 24 7 A 1.0001 1.0001
-																				0 1
-																				0 24 5 L 22.513672 5 A 1.0001 1.0001
-																				0 0 0 
-																				21.5 4 L 16 4 L 16 3.5 A 1.0001 1.0001
-																				0 0 
-																				0 14.984375 2.4863281 z M 6 9 L 
-																				7.7929688 
-																				24.234375 C 7.9109687 25.241375 
-																				8.7633438 
-																				26 9.7773438 26 L 20.222656 26 C 
-																				21.236656 
-																				26 22.088031 25.241375 22.207031 
-																				24.234375 
-																				L 24 9 L 6 9 z" />
-																			</svg>
-																		</a>
-																		<a
-																			className="ml-2 cursor-pointer border-2 border-green-500 rounded-md p-1 hover:bg-green-500 hover:text-white"
-																			href={`/edit/${item.title}`}
-																		>
-																			<svg
-																				xmlns="https://www.w3.org/2000/svg"
-																				viewBox="0 0 50 50"
-																				width="20px"
-																				height="20px"
-																			>
-																				<path d="M 43.125 2 C 41.878906 2 
-																				40.636719 
-																				2.488281 39.6875 3.4375 L 38.875 
-																				4.25 L 
-																				45.75 11.125 C 45.746094 11.128906 
-																				46.5625
-																				10.3125 46.5625 10.3125 C 48.464844 
-																				8.410156 48.460938 5.335938 46.5625 
-																				3.4375
-																				C 45.609375 2.488281 44.371094 2 
-																				43.125 2 Z
-																				M 37.34375 6.03125 C 37.117188 
-																				6.0625 
-																				36.90625 6.175781 36.75 6.34375 L 
-																				4.3125
-																				38.8125 C 4.183594 38.929688 4.085938
-																				39.082031 4.03125 39.25 L 2.03125 
-																				46.75 C 
-																				1.941406 47.09375 2.042969 47.457031 
-																				2.292969 47.707031 C 2.542969 
-																				47.957031
-																				2.90625 48.058594 3.25 47.96875 L 
-																				10.75
-																				45.96875 C 10.917969 45.914063 
-																				11.070313
-																				45.816406 11.1875 45.6875 L 43.65625 
-																				13.25
-																				C 44.054688 12.863281 44.058594 
-																				12.226563
-																				43.671875 11.828125 C 43.285156 
-																				11.429688
-																				42.648438 11.425781 42.25 11.8125 L 
-																				9.96875
-																				44.09375 L 5.90625 40.03125 L 38.1875 
-																				7.75
-																				C 38.488281 7.460938 38.578125 
-																				7.011719
-																				38.410156 6.628906 C 38.242188 
-																				6.246094
-																				37.855469 6.007813 37.4375 6.03125 
-																				C 37.40625 6.03125 37.375 6.03125 
-																				37.34375 
-																				6.03125 Z" />
-																			</svg>
-																		</a>
-																	</span>
-																</td>
-															</tr>
-														);
-													})}
-											</tbody>
-										</table>
-									</div>
+								<div className="flex flex-row items-center m-2 ">
+									<h5 className="text-lg basis-1/5">Due Date</h5>
+									<input type="date" className="ml-2 border rounded px-2 py-1 basis-1/4 border-none" name="dueDate" value={todo.dueDate} onChange={handleChange} />
 								</div>
-							</>
-						)
-					}
+								<div className="flex flex-row m-2 my-5 ">
+									{mode === "edit" && <Button className="rounded-lg border-1 border-gray-400 text-black basis-1/2 mx-5 hover:bg-red-400 hover:text-white" onClick={() => removeTodo(todo.id)}>
+										Delete Task
+									</Button>
+									}
+									<Button className="rounded-lg text-black basis-1/2 mx-5 bg-yellow-300 hover:bg-yellow-400" onClick={ mode === "add" ? addTodo : updateTodo}>
+										{mode === "edit" && "Save Task" || mode === "add" && "Add Task"}
+									</Button>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
-			</section>
+			</div>
+			
 		</ProtectedRoute>
-		
 	);
 }

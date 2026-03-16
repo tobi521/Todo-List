@@ -11,16 +11,16 @@ const port = 5000
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
-app.use(cors());
+app.use(cors())
 
 app.use("/api", router)
 
 mongoose.connect(key.mongoURI)
-    .then(() => {console.log("MongoDB connected successfully")})
-    .catch(err => {console.log("MongoDB connection error: ", err)})
+  .then(() => {console.log("MongoDB connected successfully")})
+  .catch(err => {console.log("MongoDB connection error: ", err)})
 
 import "./utils/passport"
 
 app.listen(port, () => {
-    console.log("Server is running on port 5000")
+  console.log("Server is running on port 5000")
 })

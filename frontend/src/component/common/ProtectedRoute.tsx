@@ -6,20 +6,19 @@ import { useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 
 
-import { logoutUser } from "../redux/actions/authAction";
-import { login } from "../redux/slices/authSlice"
+import { logoutUser } from "../../redux/actions/authAction";
+import { login } from "../../redux/slices/authSlice"
 
-export default function ProtectedRoute({ children }) {
+export default function ProtectedRoute({ children }:any) {
   const router = useRouter()
   const pathname = usePathname()
   const dispatch = useDispatch()
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated } = useSelector((state:any) => state.auth);
 
   useEffect(() => {
     const token = localStorage.getItem("token")
-    console.log(token)
     if(token) {
-      const decoded = jwtDecode(token)
+      const decoded: any = jwtDecode(token)
 
       if(decoded.exp * 1000 < Date.now()) {
         localStorage.removeItem("token")
@@ -40,12 +39,7 @@ export default function ProtectedRoute({ children }) {
       }
     }
 
-    // if (!isAuthenticated) {
-    //   router.push("/login");
-    // }
   }, [isAuthenticated, router]);
-
-  // if (!isAuthenticated) return null;
 
   return children;
 }

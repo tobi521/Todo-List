@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { authSlice } from "./authSlice";
 
 interface ListState {
   lists: Array<any>
@@ -20,14 +19,17 @@ export const listSlice = createSlice({
       state.lists = action.payload;
     },
     deleteList: (state, action: PayloadAction<any>) => {
-      state.lists = state.lists.filter((list: any) => list._id !== action.payload);
+      state.lists = state.lists.filter((list: any) => list._id !== action.payload._id);
     },
     updateList: (state, action: PayloadAction<any>) => {
       state.lists = state.lists.map((list: any) => list._id === action.payload._id ? action.payload : list);
+    },
+    findList: (state, action: PayloadAction<any>) => {
+      state.lists = action.payload;
     }
   }
 })
 
-export const { addList, getLists, deleteList, updateList } = listSlice.actions
+export const { addList, getLists, deleteList, updateList, findList } = listSlice.actions
 
 export default listSlice.reducer

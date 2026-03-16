@@ -14,7 +14,15 @@ const listSchema = new Schema({
     type: String,
     required: true
   },
-  check: {
+  option: {
+    type: String,
+    required: true
+  },
+  dueDate: {
+    type: Date,
+    required: true
+  },
+  status: {
     type: Boolean,
     default: false,
     required: true

@@ -11,15 +11,23 @@ export const addList = async (req: Request, res: Response) => {
       return res.status(400).json(errors)
     }
 
-    const newList = new List({
+    let todo = {
       title: req.body.title,
-      user_id: req.body.user,
-      description: req.body.description
-    })
+      user_id: req.body.user_id,
+      description: req.body.description,
+      dueDate :req.body.dueDate,
+      option: req.body.option,
+    }
 
-    const result = await newList.save()
+    let result;
+
+    if(req.body.id) {
+      result = await List.findByIdAndUpdate( req.body.id, todo, {new: true, upsert: true} )
+    } else {
+      result = await List.create(todo)
+    }
+
     return res.status(200).json({type: true, result: result})
-
   } catch(err) {
     return res.status(500).json({error: "An error occurred while adding the item" })
   }
@@ -27,14 +35,10 @@ export const addList = async (req: Request, res: Response) => {
 
 export const getLists = async (req: Request, res: Response) => {
   try {
-    const lists = await List.find({}).populate("user_id", ["name", "email"])
-
-    console.log(lists)
+    const lists = await List.find({user_id: req.params.id})
 
     return res.status(200).json({type: true, result: lists})
-
   } catch(err) {
-    console.log(err)
     return res.status(500).json({error: "An error occurred while fetching the lists" })
   }
 }
@@ -51,7 +55,7 @@ export const deleteList = async (req: Request, res: Response) => {
 
 export const updateList = async (req: Request, res: Response) => {
   try {
-    const result = await List.findByIdAndUpdate(req.params.id)
+    const result = await List.findByIdAndUpdate(req.params.id, { $set: {title: req.body.title, description: req.body.description, dueDate: req.body.dueDate, option: req.body.option, user_id: req.body.user_id, status: req.body.status}}, { returnDocument: 'after' })
 
     return res.status(200).json({type: true, result: result})
   } catch (err) {
@@ -61,7 +65,12 @@ export const updateList = async (req: Request, res: Response) => {
 
 export const findList = async (req: Request, res: Response) => {
   try {
-    const result = await List.find({ title: { $regex: req.body.keyword, $options: "i" } })
+    let result;
+    if(req.body.value !== "") {
+      result = await List.find({[req.body.key]: typeof req.body.value === "string" ? { $regex: req.body.value, $options: 'i' } : req.body.value})
+    } else {
+      result = await List.find({})
+    }
 
     return res.status(200).json({type: true, result: result})
   } catch (err) {
