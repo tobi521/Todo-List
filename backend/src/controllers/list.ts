@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { addList, getLists, deleteList, updateList, findList } from "../services/list"
+import { addList, getLists, deleteList, updateList, findList, deleteMultipleLists, modifyMultipleListsStatus } from "../services/list"
 
 export const addListCtrl = (req: Request, res: Response) => {
   addList(req, res)
@@ -19,4 +19,12 @@ export const updateListCtrl = (req: Request, res: Response) => {
 
 export const findListCtrl = (req: Request, res: Response) => {
   findList(req, res)
+}
+
+export const deleteMultipleListsCtrl = (req: Request, res: Response) => {
+  deleteMultipleLists(req, res)
+}
+
+export const modifyMultipleListsStatusCtrl = (req: Request, res: Response) => {
+  modifyMultipleListsStatus(req, res)
 }

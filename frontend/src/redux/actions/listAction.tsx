@@ -1,5 +1,5 @@
 import { clearErrors, setErrors } from "../slices/errorSlice"
-import { addList, getLists, deleteList, updateList, findList } from "../slices/listSlice"
+import { addList, getLists, deleteList, updateList, findList, deleteMultipleLists, updateMultipleListsStatus } from "../slices/listSlice"
 import axios from "axios"
 
 export const createList = async (list: object, dispatch: Function) => {
@@ -62,5 +62,29 @@ export const searchList = async (query: any, dispatch: Function) => {
     }
   } catch(err) {
     
+  }
+}
+
+export const removeMultipleLists = async (ids: String[], dispatch: Function) => {
+  try {
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_REACT_APP_SERVER_URL}/api/list/delete_multiple_lists`, {ids})
+
+    if(res.data.type) {
+      dispatch(deleteMultipleLists(res.data.result))
+    }
+  } catch(err) {
+    console.log(err)
+  }
+}
+
+export const modifyMultipleListsStatus = async (ids: String[], status: any, dispatch: Function) => {
+  try {
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_REACT_APP_SERVER_URL}/api/list/modify_multiple_lists_status`, {ids, status})
+
+    if(res.data.type) {
+      dispatch(updateMultipleListsStatus(res.data.result))
+    }
+  } catch(err) {
+    console.log(err)
   }
 }

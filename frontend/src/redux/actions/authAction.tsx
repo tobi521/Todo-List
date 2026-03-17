@@ -3,14 +3,14 @@ import { setErrors, clearErrors } from "../slices/errorSlice"
 import axios from "axios"
 import { jwtDecode } from "jwt-decode"
 
-export const registerUser = async (user: object, redirect: Function, dispatch: Function) => {
+export const registerUser = async (user: any, router: any, dispatch: Function) => {
   try {
     dispatch(clearErrors({}))
 
     const res = await axios.post(`${process.env.NEXT_PUBLIC_REACT_APP_SERVER_URL}/api/auth/register`, user)
 
     if(res.data.type) {
-      redirect("/login")
+      loginUser({email: user.email, password: user.password}, dispatch)
     }
   } catch (err: any) {
     dispatch(setErrors(err.response.data))

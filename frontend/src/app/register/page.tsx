@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { registerUser } from "../../redux/actions/authAction"
 import ProtectedRoute from "../../component/common/ProtectedRoute"
 import Input from "../../component/common/Input"
@@ -17,6 +17,7 @@ export default function Register() {
   })
 
   const dispatch = useDispatch()
+  const router = useRouter()
   const error = useSelector((state: any) => state.error)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,7 +32,7 @@ export default function Register() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    registerUser(user, redirect, dispatch);
+    registerUser(user, router, dispatch);
   }
 
   return (
@@ -95,7 +96,7 @@ export default function Register() {
               placeholder="Type your confirm password"
             />
             <Button onClick={(e:any) => handleSubmit(e)} className="bg-gradient-to-r from-cyan-400 to-fuchsia-600 text-white rounded">Register</Button>
-            <p className="text-sm mt-4 text-gray-500">Already have an account? <span className="text-blue-500 cursor-pointer" onClick={() => redirect("/login")}>Login</span></p>
+            <p className="text-sm mt-4 text-gray-500">Already have an account? <span className="text-blue-500 cursor-pointer" onClick={() => router.push("/login")}>Login</span></p>
           </div>
         </div>
       </section>

@@ -2,10 +2,11 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { Request, Response } from "express"
 
-import key from "../config/key"
 import User from "../models/user"
 import validateLoginInput from "../validator/login"
 import validateRegisterInput from "../validator/register"
+
+const key: string = process.env.secretOrKey || ""
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -31,7 +32,7 @@ export const register = async (req: Request, res: Response) => {
       newUser.password = await bcrypt.hash(newUser.password, salt)
 
       await newUser.save()
-      return res.status(200).json({type: true, result: newUser})
+      return res.status(200).json({type: true, result: "User registered successfully"})
     }
   } catch(err) {
     return res.status(500).json({error: "Server error"})
@@ -61,7 +62,7 @@ export const login = async (req: Request, res: Response) => {
         email: user.email
       }
 
-      const token = await jwt.sign(payload, key.secretOrKey, {expiresIn: 7200})
+      const token = await jwt.sign(payload, key, {expiresIn: 7200})
 
       return res.status(200).json({
         type: true,

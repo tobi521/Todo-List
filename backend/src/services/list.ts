@@ -77,3 +77,24 @@ export const findList = async (req: Request, res: Response) => {
     return res.status(500).json({error: "An error occurred while fetching the item" })
   }
 }
+
+export const deleteMultipleLists = async (req: Request, res: Response) => {
+  try {
+    const result = await List.deleteMany({_id: { $in: req.body.ids }})
+    
+    return res.status(200).json({type: true, result: req.body.ids})
+  } catch (err) {
+    return res.status(500).json({error: "An error occurred while deleting the items" })
+
+  }
+}
+
+export const modifyMultipleListsStatus = async (req: Request, res: Response) => {
+  try {
+    const result = await List.updateMany({_id: { $in: req.body.ids }}, { $set: {status: req.body.status}})
+
+    return res.status(200).json({type: true, result: {ids: req.body.ids, status: req.body.status}})
+  } catch (err) {
+    return res.status(500).json({error: "An error occurred while updating the items" })
+  }
+}
