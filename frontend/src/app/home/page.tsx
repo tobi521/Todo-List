@@ -16,13 +16,18 @@ import {
 	modifyMultipleListsStatus 
 } from "../../redux/actions/listAction"
 import { logoutUser } from "@/src/redux/actions/authAction"
-import { deleteList } from "@/src/redux/slices/listSlice"
 
 type Props = {}
 
 export default function page({}: Props) {
-	const [todo, 		setTodo] = useState<any>({
-			title: "", description: "", dueDate: new Date().toISOString().split('T')[0], user_id: "", option: "personal", id: "", status: false})
+	const [todo, 		setTodo] = useState<any>({title: "",
+		description: "",
+		dueDate: new Date().toISOString().split('T')[0],
+		user: "",
+		option: "personal",
+		id: "",
+		status: false
+	})
 	const [mode, setMode] = useState<string>("add");
 	const [search, setSearch] = useState({key: "", value: ""});
 	const [categoryOne, setCategoryOne] = useState();
@@ -31,14 +36,14 @@ export default function page({}: Props) {
 	const [multiSelect, setMultiSelect] = useState(Array<String>);
 	const [selectAll, setSelectAll] = useState(false);
 
-	// Test Code
-	const dispatch = useDispatch()
 	const list = useSelector((state:any) => state.list)
 	const auth = useSelector((state: any) => state.auth)
 	const error = useSelector((state: any) => state.error)
 
+	const dispatch = useDispatch()
+
 	useEffect(() => {
-		setTodo({...todo, user_id: auth.user.id})
+		setTodo({...todo, user: auth.user.id})
 		if(auth.user.id)
 			fetchLists(auth.user.id , dispatch)
 	}, [auth.user])
@@ -53,7 +58,7 @@ export default function page({}: Props) {
 		if(selectAll) {
 			setMultiSelect(
 				list.lists
-					.filter((item: any) => item.user_id === auth.user.id)
+					.filter((item: any) => item.user === auth.user.id)
 					.filter((item: any) => categoryTwo !== "" ? item.option === categoryTwo : true)
 					.map((item: any) => item._id)
 				)
@@ -63,7 +68,15 @@ export default function page({}: Props) {
 	}, [selectAll])
 
 	const initTodo = () => {
-		setTodo({title: "", description: "", dueDate: new Date().toISOString().split('T')[0], user_id: auth.user.id, option: "personal", id: "", status: false})
+		setTodo({
+			title: "", 
+			description: "", 
+			dueDate: new Date().toISOString().split('T')[0], 
+			user: auth.user.id, 
+			option: "personal", 
+			id: "", 
+			status: false
+		})
 	}
 
 	const handleChange = (e: any) => {
@@ -110,7 +123,6 @@ export default function page({}: Props) {
 
 	const changeCategoryTwo = (category: string, value: any) => {
 		setCategoryTwo(value)
-		// searchList({key: category, value: value}, dispatch)
 	}
 
 	const addTodo = () => {
@@ -175,13 +187,21 @@ export default function page({}: Props) {
 											</svg>
 											<p className="ml-2">All</p>
 										</li>
-										<li className={`flex p-2 hover:bg-gray-200 rounded cursor-pointer ${categoryOne === false ? "bg-gray-200" : ""}`} onClick={() => changeCategoryOne("status", false)} id="todo">
+										<li 
+											className={`flex p-2 hover:bg-gray-200 rounded cursor-pointer ${categoryOne === false ? "bg-gray-200" : ""}`} 
+											onClick={() => changeCategoryOne("status", false)} 
+											id="todo"
+										>
 											<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
 												<path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
 											</svg>
 											<p className="ml-2">Todo</p>
 										</li>
-										<li className={`flex p-2 hover:bg-gray-200 rounded cursor-pointer ${categoryOne === true ? "bg-gray-200" : ""}`} onClick={() => changeCategoryOne("status", true)} id="done">
+										<li 
+											className={`flex p-2 hover:bg-gray-200 rounded cursor-pointer ${categoryOne === true ? "bg-gray-200" : ""}`} 
+											onClick={() => changeCategoryOne("status", true)} 
+											id="done"
+										>
 											<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
 												<path strokeLinecap="round" strokeLinejoin="round" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 0 1 9 9v.375M10.125 2.25A3.375 3.375 0 0 1 13.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 0 1 3.375 3.375M9 15l2.25 2.25L15 12" />
 											</svg>
@@ -192,22 +212,37 @@ export default function page({}: Props) {
 								<h3 className="text-lg mb-3 mt-10">LISTS</h3>
 								<div>
 									<ul>
-										<li className={`flex p-2 items-center hover:bg-gray-200 rounded cursor-pointer ${categoryTwo === "personal" ? "bg-gray-200" : ""}`}  onClick={() => changeCategoryTwo("option", "personal")} id="personal">
+										<li 
+											className={`flex p-2 items-center hover:bg-gray-200 rounded cursor-pointer ${categoryTwo === "personal" ? "bg-gray-200" : ""}`}  
+											onClick={() => changeCategoryTwo("option", "personal")} 
+											id="personal"
+										>
 											<p className="bg-red-500 rounded-full w-4 h-4 mr-2"></p>
 											<p className="ml-2">Personal</p>
 										</li>
-										<li className={`flex p-2 items-center hover:bg-gray-200 rounded cursor-pointer ${categoryTwo === "work" ? "bg-gray-200" : ""}`} onClick={() => changeCategoryTwo("option", "work")} id="work">
+										<li 
+											className={`flex p-2 items-center hover:bg-gray-200 rounded cursor-pointer ${categoryTwo === "work" ? "bg-gray-200" : ""}`} 
+											onClick={() => changeCategoryTwo("option", "work")} 
+											id="work"
+										>
 											<p className="bg-blue-500 rounded-full w-4 h-4 mr-2"></p>
 											<p className="ml-2">Work</p>
 										</li>
-										<li className={`flex p-2 items-center hover:bg-gray-200 rounded cursor-pointer ${categoryTwo === "other" ? "bg-gray-200" : ""}`} onClick={() => changeCategoryTwo("option", "other")} id="other">
+										<li 
+											className={`flex p-2 items-center hover:bg-gray-200 rounded cursor-pointer ${categoryTwo === "other" ? "bg-gray-200" : ""}`} 
+											onClick={() => changeCategoryTwo("option", "other")} 
+											id="other"
+										>
 											<p className="bg-yellow-500 rounded-full w-4 h-4 mr-2"></p>
 											<p className="ml-2">Other</p>
 										</li>
 									</ul>
 								</div>
 							</div>
-							<div className="flex py-2 hover:bg-gray-200 rounded cursor-pointer px-1 mt-20" onClick={() => logoutUser(dispatch)}>
+							<div 
+								className="flex py-2 hover:bg-gray-200 rounded cursor-pointer px-1 mt-20" 
+								onClick={() => logoutUser(dispatch)}
+							>
 								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
 									<path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
 								</svg>
@@ -224,13 +259,22 @@ export default function page({}: Props) {
 								{
 									multiSelect.length > 0 &&
 									(<>
-										<button className="border rounded py-1 px-3 hover:bg-gray-200 ml-8 cursor-pointer" onClick={removeMultipleTodos}>
+										<button 
+											className="border rounded py-1 px-3 hover:bg-gray-200 ml-8 cursor-pointer" 
+											onClick={removeMultipleTodos}
+										>
 											Delete
 										</button>
-										<button className="border rounded py-1 px-3 hover:bg-gray-200 ml-3 cursor-pointer" onClick={() => updateMultipleTodoStatus(false)}>
+										<button 
+											className="border rounded py-1 px-3 hover:bg-gray-200 ml-3 cursor-pointer" 
+											onClick={() => updateMultipleTodoStatus(false)}
+										>
 											InCompleted
 										</button>
-										<button className="border rounded py-1 px-3 hover:bg-gray-200 ml-3 cursor-pointer" onClick={() => updateMultipleTodoStatus(true)}>
+										<button 
+											className="border rounded py-1 px-3 hover:bg-gray-200 ml-3 cursor-pointer" 
+											onClick={() => updateMultipleTodoStatus(true)}
+										>
 											Done
 										</button>
 									</>)
@@ -255,29 +299,46 @@ export default function page({}: Props) {
 							</button>
 						</div>
 						<div className="flex flex-col m-4 pl-4 overflow-y-auto h-135">
-							{list.lists.length > 0 ? list.lists.filter((item: any) => item.user_id === auth.user.id).filter((item: any) => categoryTwo !== "" ? item.option === categoryTwo : true).sort((a: any, b: any) => a[sort] > b[sort] ? 1 : -1).map((item: any) =>
+							{list.lists.length > 0 ? 
+								list.lists
+								.filter((item: any) => item.user === auth.user.id)
+								.filter((item: any) => categoryTwo !== "" ? item.option === categoryTwo : true)
+								.sort((a: any, b: any) => a[sort] > b[sort] ? 1 : -1)
+								.map((item: any) =>
 								<div 
 									key={item._id} 
 									className={`text-2xl border-b border-gray-300 py-3 hover:bg-gray-100 cursor-pointer flex items-center ${item.status ? "line-through text-gray-400" : ""}`} 
 								>
-									<input type="checkbox" onChange={(e) => handleMultiSelectChange(item._id)} className="mr-3 scale-130" checked={multiSelect.includes(item._id)} />
-									<div className="flex flex-row items-center" onClick={() => handleTodoClick({id: item._id, title: item.title, description: item.description, dueDate: item.dueDate, option: item.option, status: item.status})}>
+									<input 
+										type="checkbox" 
+										onChange={(e) => handleMultiSelectChange(item._id)} 
+										className="mr-3 scale-130" 
+										checked={multiSelect.includes(item._id)} 
+									/>
+									<div 
+										className="flex flex-row items-center" 
+										onClick={() => handleTodoClick({id: item._id, title: item.title, description: item.description, dueDate: item.dueDate, option: item.option, status: item.status})}
+									>
 										<p className="ml-1 w-100 overflow-hidden text-ellipsis">
 											{item.title}
 										</p>
 										<p className="ml-2 text-sm text-gray-500 w-25">{ new Date(item.dueDate).toISOString().split('T')[0]}</p>
 									</div>
-									<span className="text-sm text-gray-500 mr-3 hover:text-gray-400" aria-checked={item.status} onClick={() => handleStatusChange(item._id, !item.status)}>
-											{item.status === true ? 
-											<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="size-8 text-green-500">
-												<path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
-											</svg>
-											: 
-											<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="size-8">
-												<path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
-											</svg>
-											}
-										</span>
+									<span 
+										className="text-sm text-gray-500 mr-3 hover:text-gray-400" 
+										aria-checked={item.status} 
+										onClick={() => handleStatusChange(item._id, !item.status)}
+									>
+										{item.status === true ? 
+										<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="size-8 text-green-500">
+											<path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+										</svg>
+										: 
+										<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="size-8">
+											<path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+										</svg>
+										}
+									</span>
 								</div>) 
 								: 
 								<p>No todos for today.</p>
@@ -288,13 +349,34 @@ export default function page({}: Props) {
 						<div className="m-2 overflow-y-auto h-full">
 							<h3 className="text-3xl font-bold mb-5">Task:</h3>
 							<div className="flex flex-col w-full">
-								<Input title="Title" type="text" name="title" value={todo.title} onChange={handleChange} placeholder="Type your title" error={error.errors.title}/>
-								<Input title="Description" type="textarea" name="description" value={todo.description} onChange={handleChange} placeholder="Type your description" error={error.errors.description}/>
+								<Input 
+									title="Title" 
+									type="text" 
+									name="title" 
+									value={todo.title} 
+									onChange={handleChange} 
+									placeholder="Type your title" 
+									error={error.errors.title}
+								/>
+								<Input 
+									title="Description" 
+									type="textarea" 
+									name="description" 
+									value={todo.description} 
+									onChange={handleChange} 
+									placeholder="Type your description" 
+									error={error.errors.description}
+								/>
 							</div>
 							<div>
 								<div className="flex flex-row items-center m-2 my-5">
 									<h5 className="text-lg basis-1/5">List</h5>
-									<select name="option" className="ml-2 border rounded px-2 py-1 basis-1/4 border-none" value={todo.option} onChange={e => handleChange(e as any)}>
+									<select 
+										name="option" 
+										className="ml-2 border rounded px-2 py-1 basis-1/4 border-none" 
+										value={todo.option} 
+										onChange={e => handleChange(e as any)}
+									>
 										<option value="personal">Personal</option>
 										<option value="work">Work</option>
 										<option value="other">Other</option>
@@ -302,14 +384,27 @@ export default function page({}: Props) {
 								</div>
 								<div className="flex flex-row items-center m-2 ">
 									<h5 className="text-lg basis-1/5">Due Date</h5>
-									<input type="date" className="ml-2 border rounded px-2 py-1 basis-1/4 border-none" name="dueDate" value={todo.dueDate} onChange={handleChange} />
+									<input 
+										type="date" 
+										className="ml-2 border rounded px-2 py-1 basis-1/4 border-none" 
+										name="dueDate" 
+										value={todo.dueDate} 
+										onChange={handleChange} 
+									/>
 								</div>
 								<div className="flex flex-row m-2 my-5 ">
-									{mode === "edit" && <Button className="rounded-lg border-1 border-gray-400 text-black basis-1/2 mx-3 hover:bg-red-400 hover:text-white" onClick={() => removeTodo(todo.id)}>
+									{mode === "edit" && 
+									<Button 
+										className="rounded-lg border-1 border-gray-400 text-black basis-1/2 mx-3 hover:bg-red-400 hover:text-white" 
+										onClick={() => removeTodo(todo.id)}
+									>
 										Delete Task
 									</Button>
 									}
-									<Button className="rounded-lg text-black basis-1/2 mx-3 bg-yellow-300 hover:bg-yellow-400" onClick={ mode === "add" ? addTodo : updateTodo}>
+									<Button 
+										className="rounded-lg text-black basis-1/2 mx-3 bg-yellow-300 hover:bg-yellow-400" 
+										onClick={ mode === "add" ? addTodo : updateTodo}
+									>
 										{mode === "edit" && "Save Task" || mode === "add" && "Add Task"}
 									</Button>
 								</div>

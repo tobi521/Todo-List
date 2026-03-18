@@ -1,6 +1,7 @@
+
+import axios from "axios"
 import { clearErrors, setErrors } from "../slices/errorSlice"
 import { addList, getLists, deleteList, updateList, findList, deleteMultipleLists, updateMultipleListsStatus } from "../slices/listSlice"
-import axios from "axios"
 
 export const createList = async (list: object, dispatch: Function) => {
   try {
@@ -19,12 +20,11 @@ export const createList = async (list: object, dispatch: Function) => {
 export const fetchLists = async (id: String, dispatch: Function) => {
   try {
     const res = await axios.get(`${process.env.NEXT_PUBLIC_REACT_APP_SERVER_URL}/api/list/get_lists/${id}`)
-
     if(res.data.type) {
       dispatch(getLists(res.data.result))
     }
   } catch (err) {
-
+    console.error(err)
   }
 }
 

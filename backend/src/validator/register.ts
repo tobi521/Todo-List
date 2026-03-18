@@ -1,5 +1,5 @@
 import validator from "validator"
-import isEmpty from "./is-empty"
+import isEmpty from "./isEmpty"
 
 export default (value: { name: string; email: string; password: string; confirmPassword: string }) => {
   let errors: { name?: string; email?: string; password?: string; confirmPassword?: string } = {};

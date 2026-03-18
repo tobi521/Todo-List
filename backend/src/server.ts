@@ -1,30 +1,28 @@
 import express, { Application } from "express"
 import bodyParser from "body-parser"
 import mongoose from "mongoose"
+import passport from "passport"
 import cors from "cors"
 import * as dotenv from 'dotenv'
 
+// import passportConfig from "./utils/passport"
 import router from "./routers"
 
 const app: Application = express()
-const port = 5000
-
-dotenv.config()
-
-const MongoURI:string = process.env.mongoURI || ""
+const port = process.env.PORT || undefined
+const MongoURI:string = process.env.MONGO_URI || ""
 
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: true}))
-app.use(cors())
-
-app.use("/api", router)
+app.use(bodyParser.urlencoded({extended: false}))
+app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:3000', credentials: true }))
 
 mongoose.connect(MongoURI)
   .then(() => {console.log("MongoDB connected successfully")})
   .catch(err => {console.log("MongoDB connection error: ", err)})
 
-import "./utils/passport"
+
+app.use("/api", router)
 
 app.listen(port, () => {
-  console.log("Server is running on port 5000")
+  console.log(`Server is running on port ${port}`)
 })

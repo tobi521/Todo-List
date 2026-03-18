@@ -1,26 +1,28 @@
-import Passport from 'passport'
 import PassportJwt from "passport-jwt"
+import passport from "passport"
 
 const JwtStrategy = PassportJwt.Strategy;
 const ExtractJwt = PassportJwt.ExtractJwt;
 
-const User = require("../models/user");
+import User from "../models/user.model"
+
+const key:string = process.env.SECRET_OR_KEY || ""
 
 let opts: any = {};
 
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = 'secret';
+opts.secretOrKey = key;
 
-Passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
-    User.findOne({id: jwt_payload.id}, function(err: any, user: any) {
-        if (err) {
-            return done(err, false);
-        }
-        if (user) {
-            return done(null, user);
-        } else {
-            return done(null, false);
-            // or you could create a new account
-        }
-    });
+passport.initialize()
+
+passport.use(new JwtStrategy(opts, async (payload, done) => {
+	try {
+		const user = await User.findById(payload.id);
+		if (user) {
+			return done(null, user);
+		}
+		return done(null, false);
+	} catch (error) {
+		return done(error, false);
+	}
 }));

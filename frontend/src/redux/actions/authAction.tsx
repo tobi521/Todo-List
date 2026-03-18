@@ -1,7 +1,10 @@
-import { login, logout } from "../slices/authSlice"
-import { setErrors, clearErrors } from "../slices/errorSlice"
 import axios from "axios"
 import { jwtDecode } from "jwt-decode"
+
+import { login, logout } from "../slices/authSlice"
+import { setErrors, clearErrors } from "../slices/errorSlice"
+
+import { setAuthToken } from "../../utils"
 
 export const registerUser = async (user: any, router: any, dispatch: Function) => {
   try {
@@ -28,6 +31,9 @@ export const loginUser = async (user: object, dispatch: Function) => {
       dispatch(login(decoded))
 
       localStorage.setItem("token", res.data.result)
+
+      setAuthToken(res.data.result)
+      
     }
   } catch (err: any) {
     dispatch(setErrors(err.response.data))
@@ -36,5 +42,6 @@ export const loginUser = async (user: object, dispatch: Function) => {
 
 export const logoutUser = (dispatch: Function) => {
   dispatch(logout())
+  setAuthToken(null)
   localStorage.removeItem("token")
 }

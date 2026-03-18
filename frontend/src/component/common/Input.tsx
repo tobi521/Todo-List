@@ -16,11 +16,11 @@ export default function Input({ name, type, value, error, title, placeholder, ic
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className='align-start my-4'>
-      <label className="block text-sm font-medium text-gray-700 text-left mt-1">
+    <div className="align-start my-4 relative">
+      <label className="block text-md font-medium text-gray-700 text-left mt-1">
         {title}
       </label>
-      <div className="flex items-center border-b-2 border-gray-300 bg-white px-2 rounded">
+      <div className={`flex items-center border-2 bg-white pl-2 rounded-lg ${error ? "border-red-500" : ""}`}>
         <span className='self-center'>
           {icon}
         </span>
@@ -31,7 +31,7 @@ export default function Input({ name, type, value, error, title, placeholder, ic
             value={value}
             rows={5}
             onChange={onChange}
-            className="w-full bg-white rounded-t-lgtext-base outline-none text-gray-700 py-3 leading-8 transition-colors duration-200 ease-in-out pl-2 text-lg"
+            className="w-full bg-white text-base outline-none text-gray-700 py-3 leading-8 transition-colors duration-200 ease-in-out pl-2 text-lg"
             {...other}
           />
           :
@@ -41,13 +41,13 @@ export default function Input({ name, type, value, error, title, placeholder, ic
             placeholder={placeholder}
             value={value}
             onChange={onChange}
-            className="w-full bg-white rounded-t-lgtext-base outline-none text-gray-700 py-3 leading-8 transition-colors duration-200 ease-in-out pl-2 text-lg"
+            className={`w-full bg-white text-base outline-none text-gray-700 py-2 leading-8 transition-colors duration-200 ease-in-out pl-2 text-lg`}
             {...other}
           />
         }
         { 
           type === "password" && 
-          <span className='self-center cursor-pointer' onClick={() => setShowPassword(prev => !prev)}>
+          <span className='self-center cursor-pointer p-3' onClick={() => setShowPassword(prev => !prev)}>
             {
               showPassword ? 
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">

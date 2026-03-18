@@ -5,6 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 
+import { setAuthToken } from "@/src/utils";
 
 import { logoutUser } from "../../redux/actions/authAction";
 import { login } from "../../redux/slices/authSlice"
@@ -17,6 +18,7 @@ export default function ProtectedRoute({ children }:any) {
 
   useEffect(() => {
     const token = localStorage.getItem("token")
+    setAuthToken(token)
     if(token) {
       const decoded: any = jwtDecode(token)
 
@@ -28,7 +30,7 @@ export default function ProtectedRoute({ children }:any) {
         router.push("/login")
       } else {
         dispatch(login(decoded))
-
+        
         router.push("/home")
       }
     } else {

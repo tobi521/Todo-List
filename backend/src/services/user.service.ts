@@ -2,11 +2,9 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { Request, Response } from "express"
 
-import User from "../models/user"
+import User from "../models/user.model"
 import validateLoginInput from "../validator/login"
 import validateRegisterInput from "../validator/register"
-
-const key: string = process.env.secretOrKey || ""
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -57,12 +55,12 @@ export const login = async (req: Request, res: Response) => {
 
     if(isMatch) {
       const payload = {
-        id: user.id,
+        id: user._id,
         name: user.name,
         email: user.email
       }
 
-      const token = await jwt.sign(payload, key, {expiresIn: 7200})
+      const token = await jwt.sign(payload, process.env.SECRET_OR_KEY as string, {expiresIn: 7200})
 
       return res.status(200).json({
         type: true,
@@ -72,6 +70,7 @@ export const login = async (req: Request, res: Response) => {
       return res.status(400).json({password: "Password is incorrect"})
     }
   } catch(err) {
+    console.log(err)
     return res.status(500).json({error: "Server error"})
   }
 }

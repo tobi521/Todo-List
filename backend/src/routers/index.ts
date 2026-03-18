@@ -1,7 +1,7 @@
 import express from "express"
 
-import userRouter from "./user"
-import listRouter from "./list"
+import userRouter from "./user.router"
+import listRouter from "./list.router"
 
 const router = express.Router()
 

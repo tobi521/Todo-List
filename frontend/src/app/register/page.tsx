@@ -37,12 +37,18 @@ export default function Register() {
 
   return (
     <ProtectedRoute>
-      <section className="flex text-gray-600 body-font bg-gradient-to-r from-cyan-500 to-fuchsia-500" onKeyDown={(e) => handleKeyDown(e as any)}>
-        <div className="w-xl my-10 align-self-center px-5 py-24 mx-auto rounded-lg bg-white">
-          <h1 className="text-center text-6xl flex justify-center text-gray-700">
-            <div className="font-bold">Register</div>
+      <section className="flex text-gray-600 body-font bg-taupe-200 h-screen w-screen" onKeyDown={(e) => handleKeyDown(e as any)}>
+        <div className="w-2xl align-self-center px-5 mx-auto rounded-lg bg-white my-auto shadow-lg py-20">
+          <h1 className="flex text-gray-700 mx-10">
+            <img
+              src="/logo.svg"
+              alt="Logo"
+              className="w-12 h-12 mb-4"
+            />
+            <div className="font-bold text-cyan-500 text-6xl ml-3">𝐓𝐨-𝐝𝐨</div>
+            <div className="font-bold text-cyan-500 text-4xl ml-1 transition duration-300">𝐀𝐩𝐩</div>
           </h1>
-          <div className="flex flex-col text-center mb-20 mt-10 justify-self-center w-full px-10">
+          <div className="flex flex-col text-center mt-10 justify-self-center w-full px-10">
             <Input
               name="name"
               type="text"
@@ -95,8 +101,11 @@ export default function Register() {
               onChange={handleChange}
               placeholder="Type your confirm password"
             />
-            <Button onClick={(e:any) => handleSubmit(e)} className="bg-gradient-to-r from-cyan-400 to-fuchsia-600 text-white rounded">Register</Button>
-            <p className="text-sm mt-4 text-gray-500">Already have an account? <span className="text-blue-500 cursor-pointer" onClick={() => router.push("/login")}>Login</span></p>
+            <Button onClick={(e:any) => handleSubmit(e)} className="bg-cyan-400 text-white rounded hover:bg-cyan-500">Register</Button>
+            <p className="text-sm mt-4 text-gray-500">
+              Already have an account? 
+              <span className="text-blue-500 cursor-pointer" onClick={() => router.push("/login")}>Login</span>
+            </p>
           </div>
         </div>
       </section>
