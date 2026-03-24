@@ -1,7 +1,7 @@
 import express from "express"
 import passport from "passport"
 
-import {IsAdmin} from "../utils/authMiddle"
+import { IsAdmin } from "../middleware/authMiddle"
 
 import { 
   addListCtrl, 
@@ -18,12 +18,12 @@ const router = express.Router()
 
 router.use(passport.authenticate('jwt', { session: false }))
 
-router.post("/add_list", addListCtrl)
-router.get("/get_lists", getListsCtrl)
-router.delete("/delete_list/:id", deleteListCtrl)
-router.post("/update_list/:id", updateListCtrl)
-router.post("/find_list", findListCtrl)
-router.post("/delete_multiple_lists", IsAdmin(true), deleteMultipleListsCtrl)
-router.post("/modify_multiple_lists_status", IsAdmin(true), modifyMultipleListsStatusCtrl)
+router.post("/", addListCtrl)
+router.get("/", getListsCtrl)
+router.delete("/:id", deleteListCtrl)
+router.put("/:id", updateListCtrl)
+router.post("/search", findListCtrl)
+router.post("/delete_many", IsAdmin(true), deleteMultipleListsCtrl)
+router.post("/update_many", IsAdmin(true), modifyMultipleListsStatusCtrl)
 
 export default router

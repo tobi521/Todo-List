@@ -1,7 +1,12 @@
 import validator from "validator";
 import isEmpty from "./isEmpty";
 
-export default (value: { title: string; description: string }) => {
+export default (
+  value: { 
+    title: string; 
+    description: string 
+  }
+) => {
   let errors: { title?: string, description?: string } ={};
 
   value.title = !isEmpty(value.title) ? value.title : "";

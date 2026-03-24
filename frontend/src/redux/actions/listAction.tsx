@@ -1,4 +1,3 @@
-
 import axios from "axios"
 import { 
   addList, 
@@ -19,10 +18,10 @@ export const createList = async (list: object, dispatch: Function) => {
   try {
     dispatch(clearErrors({}))
 
-    const res = await axios.post(`${process.env.NEXT_PUBLIC_REACT_APP_SERVER_URL}/api/list/add_list`, list)
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_REACT_APP_SERVER_URL}/api/list`, list)
 
     if(res.data.type) {
-      dispatch(addList(res.data.result))    
+      dispatch(addList(res.data.result))
       notify({ type: "success", message: "Todo added successfully" })
     }
   } catch (err: any) {
@@ -36,7 +35,7 @@ export const createList = async (list: object, dispatch: Function) => {
 
 export const fetchLists = async (dispatch: Function) => {
   try {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_REACT_APP_SERVER_URL}/api/list/get_lists`)
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_REACT_APP_SERVER_URL}/api/list`)
     if(res.data.type) {
       dispatch(getLists(res.data.result))
       notify({ type: "success", message: "Todos fetched successfully" })
@@ -50,7 +49,7 @@ export const fetchLists = async (dispatch: Function) => {
 
 export const removeList = async (id: String, dispatch: Function) => {
   try {
-    const res = await axios.delete(`${process.env.NEXT_PUBLIC_REACT_APP_SERVER_URL}/api/list/delete_list/${id}`)
+    const res = await axios.delete(`${process.env.NEXT_PUBLIC_REACT_APP_SERVER_URL}/api/list/${id}`)
 
     if(res.data.type) {
       dispatch(deleteList(res.data.result))   
@@ -67,7 +66,7 @@ export const modifyList = async (id: String, data: any, dispatch: Function ) => 
   try {
     dispatch(clearErrors({}))
     
-    const res = await axios.post(`${process.env.NEXT_PUBLIC_REACT_APP_SERVER_URL}/api/list/update_list/${id}`, data)
+    const res = await axios.put(`${process.env.NEXT_PUBLIC_REACT_APP_SERVER_URL}/api/list/${id}`, data)
 
     if(res.data.type) {
       dispatch(updateList(res.data.result))
@@ -88,7 +87,7 @@ export const modifyList = async (id: String, data: any, dispatch: Function ) => 
 
 export const searchList = async (query: any, dispatch: Function) => {
   try {
-    const res = await axios.post(`${process.env.NEXT_PUBLIC_REACT_APP_SERVER_URL}/api/list/find_list`, query)
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_REACT_APP_SERVER_URL}/api/list/search`, query)
 
     if(res.data.type) {
       dispatch(findList(res.data.result))
@@ -102,7 +101,7 @@ export const searchList = async (query: any, dispatch: Function) => {
 
 export const removeMultipleLists = async (ids: String[], dispatch: Function) => {
   try {
-    const res = await axios.post(`${process.env.NEXT_PUBLIC_REACT_APP_SERVER_URL}/api/list/delete_multiple_lists`, {ids})
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_REACT_APP_SERVER_URL}/api/list/delete_many`, {ids})
 
     if(res.data.type) {
       dispatch(deleteMultipleLists(res.data.result))
@@ -119,7 +118,7 @@ export const removeMultipleLists = async (ids: String[], dispatch: Function) => 
 
 export const modifyMultipleListsStatus = async (ids: String[], status: any, dispatch: Function) => {
   try {
-    const res = await axios.post(`${process.env.NEXT_PUBLIC_REACT_APP_SERVER_URL}/api/list/modify_multiple_lists_status`, {ids, status})
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_REACT_APP_SERVER_URL}/api/list/update_many`, {ids, status})
 
     if(res.data.type) {
       dispatch(updateMultipleListsStatus(res.data.result))

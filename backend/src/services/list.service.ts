@@ -1,29 +1,28 @@
-import { Request, Response } from 'express';
-
 import List from "../models/list.model"
 import validateAddListInput from "../validator/addList"
 
+type ListProps = {
+  title: string; 
+  user: string; 
+  description: string; 
+  dueDate: Date; 
+  option: string, 
+  id: string,
+  status: boolean
+}
+
 // Add
 export const addList = 
-async (
-  body: { 
-    title: string; 
-    user: string; 
-    description: string; 
-    dueDate: Date; 
-    option: string, 
-    id: string
-  }
-) => {
-  const { errors, isValid } = validateAddListInput(body)
+async ( data: ListProps ) => {
+  const { errors, isValid } = validateAddListInput(data)
   const { 
     title, 
     user, 
     description, 
     dueDate, 
     option, 
-    id 
-  } = body
+    id
+  } = data
 
   if ( !isValid ) {
     return { type: false, result: errors }
@@ -56,7 +55,7 @@ export const getLists = async ( userId?: string ) => {
 }
 
 //Delete
-export const deleteList = async ( id :string) => {
+export const deleteList = async ( id :string ) => {
   const result = await List.findByIdAndDelete( id )
   
   return { type: true, result: result }
@@ -65,14 +64,7 @@ export const deleteList = async ( id :string) => {
 //Update
 export const updateList = 
 async (
-  body: { 
-    title?: string; 
-    description?: string; 
-    dueDate?: Date; 
-    option?: string; 
-    user_id?: string; 
-    status?: string 
-  }, 
+  data: ListProps,
   params: { 
     id?: string 
   }
@@ -83,9 +75,9 @@ async (
     description, 
     dueDate, 
     option, 
-    user_id, 
+    user, 
     status 
-  } = body;
+  } = data;
 
   const result = await List.findByIdAndUpdate(
     id, 
@@ -95,7 +87,7 @@ async (
         description, 
         dueDate, 
         option, 
-        user: user_id, 
+        user: user, 
         status 
       }
     }, 
@@ -110,21 +102,19 @@ async (
 //Find
 export const findList = 
 async ( 
-  body: { 
+  data: { 
     key: string; 
     value: string 
   },
   userId ?: string
 ) => {
-  const { key, value } = body;
+  const { key, value } = data;
 
   let result;
   if(value !== "") {
     result = await List.find({
       user: userId,
-      [key]: typeof value === "string" 
-      ? { $regex: value, $options: 'i' } 
-      : value
+      [key]: typeof value === "string" ? { $regex: value, $options: 'i' } : value
     })
   } else {
     result = await List.find({})
@@ -136,11 +126,11 @@ async (
 //Delete Multiple
 export const deleteMultipleLists = 
 async ( 
-  body: { 
+  data: { 
     ids: string[] 
   }
 ) => {
-  const { ids } = body;
+  const { ids } = data;
   await List.deleteMany( 
     { 
       _id: { 
@@ -155,12 +145,12 @@ async (
 // Modify Multiple Status
 export const modifyMultipleListsStatus = 
 async (
-  body: { 
+  data: { 
     ids: string[], 
     status: string 
   }
 ) => {
-  const { ids, status } = body;
+  const { ids, status } = data;
   await List.updateMany(
     { 
       _id: { 

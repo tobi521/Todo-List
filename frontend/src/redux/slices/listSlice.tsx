@@ -19,19 +19,30 @@ export const listSlice = createSlice({
       state.lists = action.payload;
     },
     deleteList: (state, action: PayloadAction<any>) => {
-      state.lists = state.lists.filter((list: any) => list._id !== action.payload._id);
+      state.lists = state.lists
+      .filter((list: any) => list._id !== action.payload._id);
     },
     updateList: (state, action: PayloadAction<any>) => {
-      state.lists = state.lists.map((list: any) => list._id === action.payload._id ? action.payload : list);
+      state.lists = state.lists
+      .map((list: any) => 
+        list._id === action.payload._id 
+        ? action.payload 
+        : list);
     },
     findList: (state, action: PayloadAction<any>) => {
       state.lists = action.payload;
     },
     deleteMultipleLists: (state, action: PayloadAction<Array<any>>) => {
-      state.lists = state.lists.filter((list: any) => !action.payload.includes(list._id));
+      state.lists = state.lists
+      .filter((list: any) => !action.payload.includes(list._id));
     },
     updateMultipleListsStatus: (state, action: PayloadAction<{ids: Array<any>, status: String}>) => {
-      state.lists = state.lists.map((list: any) => action.payload.ids.includes(list._id) ? {...list, status: action.payload.status} : list);
+      state.lists = state.lists
+      .map((list: any) => 
+        action.payload.ids.includes(list._id) 
+        ? {...list, status: action.payload.status} 
+        : list
+      );
     }
   }
 })
