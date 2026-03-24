@@ -1,8 +1,5 @@
-import PassportJwt from "passport-jwt"
+import { Strategy, ExtractJwt } from "passport-jwt"
 import passport from "passport"
-
-const JwtStrategy = PassportJwt.Strategy;
-const ExtractJwt = PassportJwt.ExtractJwt;
 
 import User from "../models/user.model"
 
@@ -15,14 +12,26 @@ opts.secretOrKey = key;
 
 passport.initialize()
 
-passport.use(new JwtStrategy(opts, async (payload, done) => {
-	try {
-		const user = await User.findById(payload.id);
-		if (user) {
-			return done(null, user);
-		}
-		return done(null, false);
-	} catch (error) {
-		return done(error, false);
-	}
-}));
+passport.use(
+	new Strategy(
+		opts, 
+		async (payload, done) => 
+			{ 
+				try {
+					const user = await User.findById(payload.id);
+					if (user) {
+						return done(null, {
+							id: user._id,
+							name: user.name,
+							email: user.email,
+							isAdmin: user.isAdmin
+						});
+					}
+					
+					return done(null, false);
+				} catch (error) {
+					return done(error, false);
+				}
+			}
+		)
+	);

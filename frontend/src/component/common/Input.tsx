@@ -12,8 +12,18 @@ type InputProps = {
   onChange?: (e: any) => void
 }
 
-export default function Input({ name, type, value, error, title, placeholder, icon, onChange, ...other }: InputProps) {
-  const [showPassword, setShowPassword] = useState(false);
+export default function Input({ 
+  name, 
+  type, 
+  value,
+  error, 
+  title, 
+  placeholder, 
+  icon, 
+  onChange, 
+  ...other 
+}: InputProps) {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   return (
     <div className="align-start my-4 relative">
@@ -31,7 +41,7 @@ export default function Input({ name, type, value, error, title, placeholder, ic
             value={value}
             rows={5}
             onChange={onChange}
-            className="w-full bg-white text-base outline-none text-gray-700 py-3 leading-8 transition-colors duration-200 ease-in-out pl-2 text-lg"
+            className="w-full bg-white text-base outline-none text-gray-700 py-1 leading-8 transition-colors duration-200 ease-in-out pl-2 text-md"
             {...other}
           />
           :
@@ -41,13 +51,16 @@ export default function Input({ name, type, value, error, title, placeholder, ic
             placeholder={placeholder}
             value={value}
             onChange={onChange}
-            className={`w-full bg-white text-base outline-none text-gray-700 py-2 leading-8 transition-colors duration-200 ease-in-out pl-2 text-lg`}
+            className='w-full bg-white text-base outline-none text-gray-700 py-1 leading-8 transition-colors duration-200 ease-in-out pl-2 text-md'
             {...other}
           />
         }
         { 
           type === "password" && 
-          <span className='self-center cursor-pointer p-3' onClick={() => setShowPassword(prev => !prev)}>
+          <span 
+            className='self-center cursor-pointer p-3' 
+            onClick={() => setShowPassword(prev => !prev)}
+          >
             {
               showPassword ? 
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
@@ -61,7 +74,6 @@ export default function Input({ name, type, value, error, title, placeholder, ic
             }
           </span>
         }
-          
       </div>
       {error && <p className="text-red-500 text-sm mt-1 text-left">{error}</p>}
     </div>

@@ -1,11 +1,9 @@
 import express, { Application } from "express"
 import bodyParser from "body-parser"
 import mongoose from "mongoose"
-import passport from "passport"
 import cors from "cors"
-import * as dotenv from 'dotenv'
+import morgan from "morgan"
 
-// import passportConfig from "./utils/passport"
 import router from "./routers"
 
 const app: Application = express()
@@ -15,11 +13,11 @@ const MongoURI:string = process.env.MONGO_URI || ""
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:3000', credentials: true }))
+app.use(morgan("dev"))
 
 mongoose.connect(MongoURI)
   .then(() => {console.log("MongoDB connected successfully")})
   .catch(err => {console.log("MongoDB connection error: ", err)})
-
 
 app.use("/api", router)
 

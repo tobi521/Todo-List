@@ -2,13 +2,12 @@
 
 import { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { redirect, usePathname } from "next/navigation"
-import Button from "../../component/common/Button"
-
-import Input from "../../component/common/Input"
+import { usePathname, useRouter } from "next/navigation"
 
 import { loginUser } from "../../redux/actions/authAction"
-import ProtectedRoute from "../../component/common/ProtectedRoute"
+
+import Button from "../../component/common/Button"
+import Input from "../../component/common/Input"
 
 export default function Login() {
   const [user, setUser] = useState({
@@ -18,13 +17,14 @@ export default function Login() {
 
   const dispatch = useDispatch()
   const pathname = usePathname()
+  const router = useRouter()
 
   const auth = useSelector((state: any) => state.auth)
   const error = useSelector((state: any) => state.error)
 
   useEffect(() => {
     if(auth.isAuthenticated) {
-      redirect("/home")
+      router.push("/home")
     }
   }, [auth.isAuthenticated, pathname, dispatch])
 
@@ -44,19 +44,10 @@ export default function Login() {
   }
 
   return (
-    <ProtectedRoute>
+    // <ProtectedRoute>
       <section className="flex text-gray-600 body-font w-screen h-screen bg-taupe-200" onKeyDown={(e) => handleKeyDown(e as any)}>
         <div className="w-2xl align-self-center px-5 py-20 mx-auto rounded-md bg-white shadow-lg my-auto">
           <div className="flex flex-col text-center w-full px-10">
-            <h1 className="flex text-gray-700">
-              <img
-                src="/logo.svg"
-                alt="Logo"
-                className="w-12 h-12 mb-4"
-              />
-              <div className="font-bold text-cyan-500 text-6xl ml-3">𝐓𝐨-𝐝𝐨</div>
-              <div className="font-bold text-cyan-500 text-4xl ml-1 transition duration-300">𝐀𝐩𝐩</div>
-            </h1>
             <Input
               name="email"
               type="email"
@@ -76,19 +67,22 @@ export default function Login() {
               value={user.password}
               title="Password"
               icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
-                    </svg>
-                    }
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+              </svg>
+              }
               error={error.errors?.password}
               onChange={handleChange}
               placeholder="Type your password"
             />
             <Button onClick={(e:any) => handleSubmit(e)} className="bg-cyan-400 text-white rounded text-xl hover:bg-cyan-500">Log In</Button>
-            <p className="text-sm mt-4 text-gray-500">Don't have an account? <span className="text-blue-500 cursor-pointer" onClick={() => redirect("/register")}>Register</span></p>
+            <p 
+              className="text-sm mt-4 text-gray-500"
+            >
+              Don't have an account? 
+              <span className="text-blue-500 cursor-pointer" onClick={() => router.push("/register")}>Register</span></p>
           </div>
         </div>
       </section>
-    </ProtectedRoute>
-    
+    //  </ProtectedRoute>
   )
 }

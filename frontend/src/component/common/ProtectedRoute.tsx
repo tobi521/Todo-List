@@ -23,14 +23,10 @@ export default function ProtectedRoute({ children }:any) {
       const decoded: any = jwtDecode(token)
 
       if(decoded.exp * 1000 < Date.now()) {
-        localStorage.removeItem("token")
-
         logoutUser(dispatch)
-
         router.push("/login")
       } else {
         dispatch(login(decoded))
-        
         router.push("/home")
       }
     } else {

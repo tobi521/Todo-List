@@ -16,7 +16,9 @@ export const registerUser = async (user: any, router: any, dispatch: Function) =
       loginUser({email: user.email, password: user.password}, dispatch)
     }
   } catch (err: any) {
-    dispatch(setErrors(err.response.data))
+    if(err.response.status === 400) {
+      dispatch(setErrors(err.response.data.result))
+    }
   }
 }
 
@@ -33,10 +35,11 @@ export const loginUser = async (user: object, dispatch: Function) => {
       localStorage.setItem("token", res.data.result)
 
       setAuthToken(res.data.result)
-      
     }
   } catch (err: any) {
-    dispatch(setErrors(err.response.data))
+    if(err.response.status === 400) {
+      dispatch(setErrors(err.response.data.result))
+    }
   }
 }
 

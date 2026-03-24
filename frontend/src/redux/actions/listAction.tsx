@@ -1,7 +1,19 @@
 
 import axios from "axios"
+import { 
+  addList, 
+  getLists, 
+  deleteList, 
+  updateList, 
+  findList, 
+  deleteMultipleLists, 
+  updateMultipleListsStatus 
+} from "../slices/listSlice"
 import { clearErrors, setErrors } from "../slices/errorSlice"
-import { addList, getLists, deleteList, updateList, findList, deleteMultipleLists, updateMultipleListsStatus } from "../slices/listSlice"
+
+import { notify, messages } from "../../utils"
+
+const { SERVER_DISCONNECTED, NOT_ADMIN } = messages
 
 export const createList = async (list: object, dispatch: Function) => {
   try {
@@ -10,21 +22,29 @@ export const createList = async (list: object, dispatch: Function) => {
     const res = await axios.post(`${process.env.NEXT_PUBLIC_REACT_APP_SERVER_URL}/api/list/add_list`, list)
 
     if(res.data.type) {
-      dispatch(addList(res.data.result))
+      dispatch(addList(res.data.result))    
+      notify({ type: "success", message: "Todo added successfully" })
     }
   } catch (err: any) {
-    dispatch(setErrors(err.response.data))
+    if(!err.response) {
+      notify({ type: "error", message: SERVER_DISCONNECTED })
+    } else if(err.response.status === 400) {
+      dispatch(setErrors(err.response.data.result))
+    }
   }
 }
 
-export const fetchLists = async (id: String, dispatch: Function) => {
+export const fetchLists = async (dispatch: Function) => {
   try {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_REACT_APP_SERVER_URL}/api/list/get_lists/${id}`)
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_REACT_APP_SERVER_URL}/api/list/get_lists`)
     if(res.data.type) {
       dispatch(getLists(res.data.result))
+      notify({ type: "success", message: "Todos fetched successfully" })
     }
-  } catch (err) {
-    console.error(err)
+  } catch (err: any) {
+    if(!err.response) {
+      notify({ type: "error", message: SERVER_DISCONNECTED })
+    }
   }
 }
 
@@ -33,10 +53,13 @@ export const removeList = async (id: String, dispatch: Function) => {
     const res = await axios.delete(`${process.env.NEXT_PUBLIC_REACT_APP_SERVER_URL}/api/list/delete_list/${id}`)
 
     if(res.data.type) {
-      dispatch(deleteList(res.data.result))
+      dispatch(deleteList(res.data.result))   
+      notify({ type: "success", message: "Todo deleted successfully" })
     }
-  } catch(err) {
-
+  } catch(err: any) {
+    if(!err.response) {
+      notify({ type: "error", message: SERVER_DISCONNECTED })
+    }
   }
 }
 
@@ -48,8 +71,18 @@ export const modifyList = async (id: String, data: any, dispatch: Function ) => 
 
     if(res.data.type) {
       dispatch(updateList(res.data.result))
+      notify({ type: "success", message: "Todo updated successfully" })
+    } else {
+      if(res.status === 400) {
+        dispatch(setErrors(res.data.result))
+      }
     }
-  } catch(err) {
+  } catch(err: any) {
+    if(!err.response) {
+      notify({ type: "error", message: SERVER_DISCONNECTED })
+    } else if(err.response.status === 400) {
+      dispatch(setErrors(err.response.data.result))
+    }
   }
 }
 
@@ -60,8 +93,10 @@ export const searchList = async (query: any, dispatch: Function) => {
     if(res.data.type) {
       dispatch(findList(res.data.result))
     }
-  } catch(err) {
-    
+  } catch(err: any) {
+    if(!err.response) {
+      notify({ type: "error", message: SERVER_DISCONNECTED })
+    }
   }
 }
 
@@ -71,9 +106,14 @@ export const removeMultipleLists = async (ids: String[], dispatch: Function) => 
 
     if(res.data.type) {
       dispatch(deleteMultipleLists(res.data.result))
+      notify({ type: "success", message: "Todos deleted successfully" })
     }
-  } catch(err) {
-    console.log(err)
+  } catch(err: any) {
+    if(!err.response) {
+      notify({ type: "error", message: SERVER_DISCONNECTED })
+    } else if(err.response.status === 403) {
+      notify({ type: "error", message: NOT_ADMIN })
+    }
   }
 }
 
@@ -83,8 +123,13 @@ export const modifyMultipleListsStatus = async (ids: String[], status: any, disp
 
     if(res.data.type) {
       dispatch(updateMultipleListsStatus(res.data.result))
+      notify({ type: "success", message: "Todos updated successfully" })
     }
-  } catch(err) {
-    console.log(err)
+  } catch(err: any) {
+    if(!err.response) {
+      notify({ type: "error", message: SERVER_DISCONNECTED })
+    } else if(err.response.status === 403) {
+      notify({ type: "error", message: NOT_ADMIN })
+    }
   }
 }

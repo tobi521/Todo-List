@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "../redux/providers";
+import ToastProvider from "../component/common/ToastProvider";
 
 import "../styles/globals.css"
 
@@ -16,7 +17,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Todo List App",
-  description: "A simple todo list application built with Next.js, Express, and MongoDB.",
+  description: "A simple todo list application built with TypeScript, Next.js, Express, and MongoDB.",
 };
 
 export default function RootLayout({
@@ -28,7 +29,9 @@ export default function RootLayout({
     <html lang="en">
       <Providers>
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} >
-          {children}
+          <ToastProvider>
+            {children}
+          </ToastProvider>
         </body>
       </Providers>
     </html>

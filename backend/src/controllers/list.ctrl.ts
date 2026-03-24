@@ -1,58 +1,99 @@
 import { Request, Response } from 'express';
-import { addList, getLists, deleteList, updateList, findList, deleteMultipleLists, modifyMultipleListsStatus } from "../services/list.service"
+import { 
+  addList, 
+  getLists, 
+  deleteList, 
+  updateList, 
+  findList, 
+  deleteMultipleLists, 
+  modifyMultipleListsStatus 
+} from "../services/list.service"
 
-export const addListCtrl = (req: Request, res: Response) => {
-  try {
-    addList(req, res)
-  } catch(err) {
-    return res.status(500).json({error: "An error occurred while adding the item" })
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        id?: string;
+      };
+    }
   }
 }
 
-export const getListsCtrl = (req: Request, res: Response) => {
+export const addListCtrl = async (req: Request, res: Response) => {
   try {
-    getLists(req, res)
+    const result = await addList(req.body);
+
+    if(result.type) 
+      return res.status(200).json({ ...result });
+    else return res.status(400).json({ ...result });
   } catch(err) {
-    return res.status(500).json({error: "An error occurred while fetching the lists" })
+    return res.status(500).json({error: 500})
   }
 }
 
-export const deleteListCtrl = (req: Request, res: Response) => {
+export const getListsCtrl = async (req: Request, res: Response) => {
   try {
-    deleteList(req, res)
+    const id = req.user?.id;
+    const result = await getLists(id);
+
+    return res.status(200).json({ ...result });
   } catch(err) {
-    return res.status(500).json({error: "An error occurred while deleting the item" })
+    return res.status(500).json({error: 500})
   }
 }
 
-export const updateListCtrl = (req: Request, res: Response) => {
+export const deleteListCtrl = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id as string 
+
+    const result = await deleteList(id);
+
+    return res.status(200).json({ ...result });
+  } catch(err) {
+    return res.status(500).json({error: 500})
+  }
+}
+
+export const updateListCtrl = async (req: Request, res: Response) => {
   try{
-    updateList(req, res)
+    const id = req.params.id as string
+
+    const result = await updateList(req.body, { id });
+
+    return res.status(200).json({ ...result });
   } catch(err) {
-    return res.status(500).json({error: "An error occurred while updating the item" })
+    return res.status(500).json({error: 500})
   }
 } 
 
-export const findListCtrl = (req: Request, res: Response) => {
+export const findListCtrl = async (req: Request, res: Response) => {
   try {
-    findList(req, res)
+    const id = req.user?.id;
+
+    const result = await findList(req.body, id);
+
+    return res.status(200).json({ ...result });
   } catch(err) {
-    return res.status(500).json({error: "An error occurred while finding the item" })
+    return res.status(500).json({error: 500})
   }
 }
 
-export const deleteMultipleListsCtrl = (req: Request, res: Response) => {
+export const deleteMultipleListsCtrl = async (req: Request, res: Response) => {
   try {
-    deleteMultipleLists(req, res)
+    const result = await deleteMultipleLists(req.body);
+
+    return res.status(200).json({ ...result });
   } catch(err) {
-    return res.status(500).json({error: "An error occurred while deleting the items" })
+    return res.status(500).json({error: 500})
   }
 }
 
-export const modifyMultipleListsStatusCtrl = (req: Request, res: Response) => {
+export const modifyMultipleListsStatusCtrl = async (req: Request, res: Response) => {
   try{
-    modifyMultipleListsStatus(req, res)
+    const result = await modifyMultipleListsStatus(req.body);
+
+    return res.status(200).json({ ...result });
   } catch(err) {
-    return res.status(500).json({error: "An error occurred while modifying the status of the items" })
+    return res.status(500).json({error: 500})
   }
 }

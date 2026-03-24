@@ -1,8 +1,20 @@
 import validator from "validator"
 import isEmpty from "./isEmpty"
 
-export default (value: { name: string; email: string; password: string; confirmPassword: string }) => {
-  let errors: { name?: string; email?: string; password?: string; confirmPassword?: string } = {};
+export default (
+  value: { 
+    name: string; 
+    email: string; 
+    password: string; 
+    confirmPassword: string 
+  }
+) => {
+  let errors: { 
+    name?: string; 
+    email?: string; 
+    password?: string; 
+    confirmPassword?: string 
+  } = {};
 
   value.name = !isEmpty(value.name) ? value.name : "";
   value.email = !isEmpty(value.email) ? value.email : "";
@@ -33,13 +45,14 @@ export default (value: { name: string; email: string; password: string; confirmP
     errors.password = "Password is required";
   }
 
+  if(!validator.equals(value.password, value.confirmPassword)) {
+    errors.confirmPassword = "Passwords must match";
+  }
+  
   if(validator.isEmpty(value.confirmPassword)) {
     errors.confirmPassword = "Confirm password is required";
   }
 
-  if(!validator.equals(value.password, value.confirmPassword)) {
-    errors.confirmPassword = "Passwords must match";
-  }
 
   return {
     errors,
