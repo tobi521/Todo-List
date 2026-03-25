@@ -13,14 +13,22 @@ type ListProps = {
 
 // Add
 export const addList = 
+<<<<<<< HEAD
 async ( data: ListProps, user: string | undefined ) => {
+=======
+async ( data: ListProps ) => {
+>>>>>>> 822c5144d0344f2a5830e37a2a2917e7418a8e73
   const { errors, isValid } = validateAddListInput(data)
   const { 
     title, 
     description, 
     dueDate, 
     option, 
+<<<<<<< HEAD
     id 
+=======
+    id
+>>>>>>> 822c5144d0344f2a5830e37a2a2917e7418a8e73
   } = data
 
   if ( !isValid ) {

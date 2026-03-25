@@ -22,7 +22,7 @@ export const createList = async (list: object, dispatch: Function) => {
 
     if(res.data.type) {
       dispatch(addList(res.data.result))
-      notify({ type: 'success', message: 'Todo added successfully' })
+      notify({ type: "success", message: "Todo added successfully" })
     }
   } catch (err: any) {
     if(!err.response) {
