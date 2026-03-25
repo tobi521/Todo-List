@@ -9,23 +9,17 @@ import {
   modifyMultipleListsStatus 
 } from "../services/list.service"
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        id?: string;
-      };
-    }
-  }
-}
+import "../utils/const"
 
 export const addListCtrl = async (req: Request, res: Response) => {
   try {
-    const result = await addList(req.body);
+    const id = req.user?.id;
+    const result = await addList(req.body, id);
 
     if(result.type) 
       return res.status(200).json({ ...result });
-    else return res.status(400).json({ ...result });
+    else 
+      return res.status(400).json({ ...result });
   } catch(err) {
     return res.status(500).json({error: 500})
   }

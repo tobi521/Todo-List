@@ -1,4 +1,5 @@
-import {Request, Response, NextFunction} from 'express';
+import { Request, Response, NextFunction } from 'express';
+import "../utils/const"
 
 export function IsAdmin(isAdmin: boolean) {
   return (req: Request, res: Response, next: NextFunction) => {

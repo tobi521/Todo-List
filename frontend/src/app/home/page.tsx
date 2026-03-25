@@ -391,7 +391,7 @@ export default function page({}: Props) {
 										name="option" 
 										className="ml-2 border rounded px-2 py-1 basis-1/4 border-none text-sm" 
 										value={todo.option} 
-										onChange={e => handleChange(e as any)}
+										onChange={e => handleChange(e)}
 									>
 										<option value="personal">Personal</option>
 										<option value="work">Work</option>

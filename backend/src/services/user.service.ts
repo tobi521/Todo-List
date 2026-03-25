@@ -5,18 +5,23 @@ import User from "../models/user.model"
 import validateLoginInput from "../validator/login"
 import validateRegisterInput from "../validator/register"
 
+type RegisterProps = {
+  name: string, 
+  email: string, 
+  password: string, 
+  confirmPassword: string,
+  isAdmin: boolean
+}
+
+type LoginProps = {
+  email: string,
+  password: string
+}
+
 export const register = 
-async (
-  body: { 
-    name: string, 
-    email: string, 
-    password: string, 
-    confirmPassword: string,
-    isAdmin: boolean
-  }
-) => {
-  const { errors, isValid } = validateRegisterInput(body)
-  const { name, email, password, isAdmin } = body
+async ( data: RegisterProps ) => {
+  const { errors, isValid } = validateRegisterInput(data)
+  const { name, email, password, isAdmin } = data
 
   if (!isValid) {
     return { type: false, result: errors }
@@ -44,14 +49,9 @@ async (
 }
 
 export const login = 
-async (
-  body: { 
-    email: string; 
-    password: string 
-  }
-) => {
-  const { errors, isValid } = validateLoginInput(body)
-  const { email, password } = body
+async ( data: LoginProps ) => {
+  const { errors, isValid } = validateLoginInput(data)
+  const { email, password } = data
 
   if(!isValid) {
     return { type: false, result: errors }
