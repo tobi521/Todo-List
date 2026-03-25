@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface ListState {
   lists: Array<any>
@@ -9,7 +9,7 @@ const initialState: ListState = {
 }
 
 export const listSlice = createSlice({
-  name: "list",
+  name: 'list',
   initialState,
   reducers: {
     addList: (state, action: PayloadAction<any>) => {

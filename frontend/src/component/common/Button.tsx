@@ -7,11 +7,8 @@ type Props = {
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
 }
 
-export default function Button({ 
-  onClick, 
-  className, 
-  children 
-}: Props) {
+export default function Button(props: Props) {
+  const { className, children, onClick } = props
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {

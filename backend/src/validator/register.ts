@@ -1,6 +1,13 @@
 import validator from "validator"
 import isEmpty from "./isEmpty"
 
+type ErrorProps = {
+  name?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+}
+
 export default (
   value: { 
     name: string; 
@@ -9,12 +16,7 @@ export default (
     confirmPassword: string 
   }
 ) => {
-  let errors: { 
-    name?: string; 
-    email?: string; 
-    password?: string; 
-    confirmPassword?: string 
-  } = {};
+  let errors: ErrorProps ={};
 
   value.name = !isEmpty(value.name) ? value.name : "";
   value.email = !isEmpty(value.email) ? value.email : "";

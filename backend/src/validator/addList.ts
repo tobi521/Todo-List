@@ -1,13 +1,18 @@
 import validator from "validator";
 import isEmpty from "./isEmpty";
 
+type ErrorProps = {
+  title?: string;
+  description?: string;
+}
+
 export default (
   value: { 
     title: string; 
     description: string 
   }
 ) => {
-  let errors: { title?: string, description?: string } ={};
+  let errors: ErrorProps ={};
 
   value.title = !isEmpty(value.title) ? value.title : "";
   value.description = !isEmpty(value.description) ? value.description : "";

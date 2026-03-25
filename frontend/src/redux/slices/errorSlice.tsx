@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface ErrorState {
   errors: Object
@@ -9,7 +9,7 @@ const initialState: ErrorState = {
 }
 
 export const errorSlice = createSlice({
-  name: "error",
+  name: 'error',
   initialState,
   reducers: {
     setErrors: (state, action: PayloadAction<any>) => {

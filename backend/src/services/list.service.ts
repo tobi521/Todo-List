@@ -3,10 +3,12 @@ import validateAddListInput from "../validator/addList"
 
 type ListProps = {
   title: string; 
+  user: string; 
   description: string; 
   dueDate: Date; 
   option: string, 
-  id: string
+  id: string,
+  status: boolean
 }
 
 // Add
@@ -61,14 +63,7 @@ export const deleteList = async ( id :string ) => {
 //Update
 export const updateList = 
 async (
-  data: { 
-    title?: string; 
-    description?: string; 
-    dueDate?: Date; 
-    option?: string; 
-    user_id?: string; 
-    status?: string 
-  }, 
+  data: ListProps,
   params: { 
     id?: string 
   }
@@ -79,7 +74,7 @@ async (
     description, 
     dueDate, 
     option, 
-    user_id, 
+    user, 
     status 
   } = data;
 
@@ -91,7 +86,7 @@ async (
         description, 
         dueDate, 
         option, 
-        user: user_id, 
+        user: user, 
         status 
       }
     }, 
@@ -118,8 +113,7 @@ async (
   if(value !== "") {
     result = await List.find({
       user: userId,
-      [key]: typeof value === "string" ? { $regex: value, $options: 'i' } 
-      : value
+      [key]: typeof value === "string" ? { $regex: value, $options: 'i' } : value
     })
   } else {
     result = await List.find({})

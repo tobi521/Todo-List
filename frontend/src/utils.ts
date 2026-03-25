@@ -1,20 +1,20 @@
-import axios from "axios"
+import axios from 'axios'
 
 import { toast } from 'react-toastify';
 
 export type NotifyProps = {
-  type?: "success" | "error" | "info" | "warning" | "default";
+  type?: 'success' | 'error' | 'info' | 'warning' | 'default';
   message?: string;
 }
 
 const notifyOpts: object = {
-  position: "top-right",
+  position: 'top-right',
   autoClose: 3000,
   hideProgressBar: true,
   closeOnClick: true,
   draggable: true,
   progress: undefined,
-  theme: "light",
+  theme: 'light',
 }
 
 export const setAuthToken = (token: string | null) => {
@@ -27,22 +27,22 @@ export const setAuthToken = (token: string | null) => {
 
 export const notify = ({ type, message }: NotifyProps) => {
   switch (type) {
-    case "success":
-      toast.success(message || "Success!", notifyOpts);
+    case 'success':
+      toast.success(message || 'Success!', notifyOpts);
       break;
-    case "error":
-      toast.error(message || "Error occurred!", notifyOpts );
+    case 'error':
+      toast.error(message || 'Error occurred!', notifyOpts );
       break;
-    case "info":
-      toast.info(message || "Information!", notifyOpts);
+    case 'info':
+      toast.info(message || 'Information!', notifyOpts);
       break;
-    case "warning":
-      toast.warning(message || "Warning!", notifyOpts);
+    case 'warning':
+      toast.warning(message || 'Warning!', notifyOpts);
       break;
   }
 }
 
 export const messages = {
-  SERVER_DISCONNECTED: "Server disconnected!",
-  NOT_ADMIN: "You are not administrator!" 
+  SERVER_DISCONNECTED: 'Server disconnected!',
+  NOT_ADMIN: 'You are not administrator!' 
 }

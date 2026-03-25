@@ -1,23 +1,23 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { Providers } from "../redux/providers";
-import ToastProvider from "../component/common/ToastProvider";
+import type { Metadata } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
+import { Providers } from '../redux/providers';
+import ToastProvider from '../component/common/ToastProvider';
 
-import "../styles/globals.css"
+import '../styles/globals.css'
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  title: "Todo List App",
-  description: "A simple todo list application built with TypeScript, Next.js, Express, and MongoDB.",
+  title: 'Todo List App',
+  description: 'A simple todo list application built with TypeScript, Next.js, Express, and MongoDB.',
 };
 
 export default function RootLayout({
@@ -26,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang='en'>
       <Providers>
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} >
           <ToastProvider>

@@ -1,6 +1,6 @@
 'use client'
 
-import ProtectedRoute from "../component/common/ProtectedRoute";
+import ProtectedRoute from '../component/common/ProtectedRoute';
 
 const todos = () => {
 
